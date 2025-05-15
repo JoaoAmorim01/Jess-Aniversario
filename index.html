@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta para Meu Dengo</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fde9f3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .espaco-topo {
+      height: 200px;
+    }
+
+    .envelope {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      height: auto;
+      background: #f48fb1;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.5s;
+      overflow: visible;
+      padding-bottom: 20px;
+      z-index: 1;
+    }
+
+    .envelope::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #ec407a;
+      clip-path: polygon(0 0, 50% 50%, 100% 0);
+      top: 0;
+      left: 0;
+      transform-origin: top;
+      transition: transform 0.5s;
+      z-index: 2;
+    }
+
+    .envelope.open::before {
+      transform: rotateX(180deg);
+    }
+
+    .carta {
+      position: relative;
+      margin: 60px 20px 0;
+      background: white;
+      border-radius: 6px;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      transition: all 0.6s ease;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      overflow-y: auto;
+      z-index: 1;
+      font-size: 16px;
+      min-height: 150px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .envelope.open .carta {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      animation: cartaGlow 1.5s ease forwards;
+    }
+
+    @keyframes cartaGlow {
+      0% { box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+      50% { box-shadow: 0 0 25px rgba(255, 105, 180, 0.4); }
+      100% { box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+    }
+
+    .botao {
+      margin-top: 50px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #d81b60;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 1;
+    }
+
+    .botao:hover {
+      background: #ad1457;
+    }
+
+    .coracoes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .coracao {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: subir 5s linear infinite;
+    }
+
+    .coracao::before,
+    .coracao::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .coracao::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .coracao::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes subir {
+      0% {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .digitando span {
+      display: inline;
+      white-space: normal;
+      opacity: 0;
+      animation: digitar 0.05s forwards;
+    }
+
+    @keyframes digitar {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <audio autoplay loop volume="0.5">
+    <source src="Minha Preta.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="coracoes" id="coracoes"></div>
+
+  <div class="espaco-topo"></div>
+
+  <div class="envelope" id="envelope">
+    <div class="carta">
+      <h2>Minha Preta 🌸</h2>
+      <p id="textoCarta" class="digitando">
+      </p>
+    </div>
+  </div>
+  <button class="botao" onclick="toggleEnvelope()">Abrir / Fechar Carta</button>
+
+  <script>
+    const mensagem = `Bom diaaaa, meu lírio oceânico, meu dengo! Teve boas aventuras no reino onírico? Enfim amor, hoje é o seu dia, e eu queria ser o primeiro a te dar parabéns, só que ontem te liguei e você já tava dormindo meia noite. Então decidi fazer uma coisa única, um parabéns só seu. Agradeço aos orixás todos os dias por ter você na minha vida. Que essa nova fase seja cheia de amor, saúde e muitos sorrisos. Te amo! Te desejo muita vida, muitos orgasmos e muitas danças no escuro! Meu amor por você não conhece limites físicos ou imateriais só sabe te amar e te desejar bem ❤`;
+    let coracoesExtras = false;
+
+    function toggleEnvelope() {
+      const envelope = document.getElementById('envelope');
+      envelope.classList.toggle('open');
+
+      if (envelope.classList.contains('open')) {
+        digitarTexto();
+        if (!coracoesExtras) {
+          for (let i = 0; i < 20; i++) criarCoracao();
+          coracoesExtras = true;
+        }
+      }
+    }
+
+    function criarCoracao() {
+      const coracao = document.createElement('div');
+      coracao.classList.add('coracao');
+      coracao.style.left = Math.random() * window.innerWidth + 'px';
+      coracao.style.bottom = '-20px';
+      coracao.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      document.getElementById('coracoes').appendChild(coracao);
+
+      setTimeout(() => {
+        coracao.remove();
+      }, 6000);
+    }
+
+    setInterval(criarCoracao, 300);
+
+    function digitarTexto() {
+      const container = document.getElementById("textoCarta");
+      container.innerHTML = "";
+      mensagem.split("").forEach((char, i) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        span.style.animationDelay = `${i * 0.05}s`;
+        container.appendChild(span);
+      });
+    }
+  </script>
+</body>
+</html>
